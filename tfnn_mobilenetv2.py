@@ -1,3 +1,4 @@
+import tensorflow as tf
 # redefine mobilnet funcs in pure tf
 
 random_normal = tf.initializers.RandomNormal()
@@ -91,8 +92,7 @@ def _inverted_res_block(inputs, expansion, stride, alpha, filters, block_id):
     return x
 
 def mobilenetv2(x, alpha=1.0, classes=6):
-    # first_block_filters = _make_divisible(32 * alpha, 8)
-    first_block_filters = 16
+    first_block_filters = _make_divisible(32 * alpha, 8)
     in_channels = tf.shape(x)[-1].numpy()
     padding = correct_pad(inputs=x, kernel_size=3)
 
@@ -177,3 +177,12 @@ def mobilenetv2(x, alpha=1.0, classes=6):
     x = tf.nn.softmax(x)
     print(f'[INFO] output shape: {x.shape}')
     return x
+
+
+if __name__ == "__main__":
+    import numpy as np
+
+    inputs = tf.cast(np.random.rand(1, 224, 224, 1), dtype=tf.float32)
+
+    output = mobilenetv2(inputs, 1.0, 6)
+    print(output.shape)
