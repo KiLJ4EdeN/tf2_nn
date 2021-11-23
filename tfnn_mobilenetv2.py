@@ -178,9 +178,10 @@ def mobilenetv2(x, alpha=1.0, classes=6):
     print(f'[INFO] output shape: {x.shape}')
     return x
 
-import numpy as np
+if __name__ == "__main__":
 
-inputs = tf.cast(np.random.rand(1, 224, 224, 1), dtype=tf.float32)
+  import numpy as np
 
-output = mobilenetv2(inputs, 1.0, 6)
-print(output.shape)
+  inputs = tf.cast(np.random.rand(1, 224, 224, 1), dtype=tf.float32)
+  output = mobilenetv2(inputs, 1.0, 6)
+  print(output.shape)
