@@ -47,7 +47,7 @@ def _inverted_res_block(inputs, expansion, stride, alpha, filters, block_id):
     if block_id:
       # expansion
       x = tf.nn.conv2d(x,
-                       tf.Variable(random_normal([3, 3, in_channels, (expansion*filters)])),
+                       tf.Variable(random_normal([1, 1, in_channels, (expansion*in_channels)])),
                        strides=[1, 1, 1, 1], padding='SAME',
                        name=prefix+'expand')
       # calc mean and var
@@ -75,7 +75,7 @@ def _inverted_res_block(inputs, expansion, stride, alpha, filters, block_id):
     print(f'[INFO] shape after depthwiseconv: \n{x.shape}\n')
     # projection
     x = tf.nn.conv2d(x,
-                     tf.Variable(random_normal([1, 1, expansion * filters, pointwise_filters])),
+                     tf.Variable(random_normal([1, 1, tf.shape(x)[-1].numpy(), pointwise_filters])),
                      strides=[1, 1, 1, 1], padding='SAME',
                      name=prefix+'project')
     # calc mean and var
@@ -178,11 +178,9 @@ def mobilenetv2(x, alpha=1.0, classes=6):
     print(f'[INFO] output shape: {x.shape}')
     return x
 
+import numpy as np
 
-if __name__ == "__main__":
-    import numpy as np
+inputs = tf.cast(np.random.rand(1, 224, 224, 1), dtype=tf.float32)
 
-    inputs = tf.cast(np.random.rand(1, 224, 224, 1), dtype=tf.float32)
-
-    output = mobilenetv2(inputs, 1.0, 6)
-    print(output.shape)
+output = mobilenetv2(inputs, 1.0, 6)
+print(output.shape)
